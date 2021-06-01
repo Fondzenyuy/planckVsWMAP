@@ -1,0 +1,1835 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+    \usepackage{iftex}
+    \ifPDFTeX
+    	\usepackage[T1]{fontenc}
+    	\usepackage{mathpazo}
+    \else
+    	\usepackage{fontspec}
+    \fi
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+    \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{planck}
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.74,0.48,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.82,0.25,0.23}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.63,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,0.60}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.49,0.56,0.16}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.13}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.63,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{1.00,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.53,0.53}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb. 
+    \makeatletter
+        \newbox\Wrappedcontinuationbox 
+        \newbox\Wrappedvisiblespacebox 
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}} 
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}} 
+        \newcommand*\Wrappedcontinuationindent {3ex } 
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox} 
+        % Take advantage of the already applied Pygments mark-up to insert 
+        % potential linebreaks for TeX processing. 
+        %        {, <, #, %, $, ' and ": go to next line. 
+        %        _, }, ^, &, >, - and ~: stay at end of broken line. 
+        % Use of \textquotesingle for straight quote. 
+        \newcommand*\Wrappedbreaksatspecials {% 
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}% 
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}% 
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}% 
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}% 
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}% 
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}% 
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}% 
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}% 
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}% 
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}% 
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}% 
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}% 
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}% 
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}% 
+        } 
+        % Some characters . , ; ? ! / are not pygmentized. 
+        % This macro makes them "active" and they will insert potential linebreaks 
+        \newcommand*\Wrappedbreaksatpunct {% 
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}% 
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}% 
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}% 
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}% 
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}% 
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}% 
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}% 
+            \catcode`\.\active
+            \catcode`\,\active 
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active 
+            \lccode`\~`\~ 	
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+        
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active 	
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+    
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    \maketitle
+    
+    
+
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+\PY{k+kn}{import} \PY{n+nn}{healpy} \PY{k}{as} \PY{n+nn}{hp}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{!}pwd
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+/Users/tony/project\_planckVsWMAP
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{hp}\PY{o}{.}\PY{n}{read\PYZus{}map}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ffp10\PYZus{}newdust\PYZus{}total\PYZus{}353\PYZus{}full\PYZus{}map.fits}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}                \PY{c+c1}{\PYZsh{}planckTmap}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+/opt/anaconda3/envs/act\_notebooks/lib/python3.9/site-
+packages/healpy/fitsfunc.py:368: UserWarning: If you are not specifying the
+input dtype and using the default np.float64 dtype of read\_map(), please
+consider that it will change in a future version to None as to keep the same
+dtype of the input file: please explicitly set the dtype if it is important to
+you.
+  warnings.warn(
+/opt/anaconda3/envs/act\_notebooks/lib/python3.9/site-
+packages/healpy/fitsfunc.py:391: UserWarning: NSIDE = 2048
+  warnings.warn("NSIDE = \{0:d\}".format(nside))
+/opt/anaconda3/envs/act\_notebooks/lib/python3.9/site-
+packages/healpy/fitsfunc.py:400: UserWarning: ORDERING = RING in fits file
+  warnings.warn("ORDERING = \{0:s\} in fits file".format(ordering))
+/opt/anaconda3/envs/act\_notebooks/lib/python3.9/site-
+packages/healpy/fitsfunc.py:428: UserWarning: INDXSCHM = IMPLICIT
+  warnings.warn("INDXSCHM = \{0:s\}".format(schm))
+    \end{Verbatim}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+array([ 2.50327867e-06, -4.45016194e-05,  3.31364572e-05, {\ldots},
+       -4.48527280e-05, -1.91247091e-05,  2.42725946e-05])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{6}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{map\PYZus{}sample} \PY{o}{=} \PY{n}{hp}\PY{o}{.}\PY{n}{read\PYZus{}map}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ffp10\PYZus{}newdust\PYZus{}total\PYZus{}030\PYZus{}full\PYZus{}map.fits}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+/opt/anaconda3/envs/act\_notebooks/lib/python3.9/site-
+packages/healpy/fitsfunc.py:391: UserWarning: NSIDE = 1024
+  warnings.warn("NSIDE = \{0:d\}".format(nside))
+/opt/anaconda3/envs/act\_notebooks/lib/python3.9/site-
+packages/healpy/fitsfunc.py:400: UserWarning: ORDERING = NESTED in fits file
+  warnings.warn("ORDERING = \{0:s\} in fits file".format(ordering))
+/opt/anaconda3/envs/act\_notebooks/lib/python3.9/site-
+packages/healpy/fitsfunc.py:486: UserWarning: Ordering converted to RING
+  warnings.warn("Ordering converted to RING")
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{map\PYZus{}sample}    \PY{c+c1}{\PYZsh{}353Hz map}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+array([-2.71337165e-04, -9.36984798e-05, -2.51075049e-04, {\ldots},
+       -1.52736000e-04, -1.10948109e-04, -7.72219792e-05])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{8}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{hp}\PY{o}{.}\PY{n}{mollview}\PY{p}{(}
+    \PY{n}{map\PYZus{}sample}\PY{p}{,}
+    \PY{n}{coord}\PY{o}{=}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{G}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{E}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{,}
+    \PY{n}{title}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Histogram equalized Ecliptic Sample 30Hz}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{n}{unit}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{mK}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{n}{norm}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{hist}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{n+nb}{min}\PY{o}{=}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.01}\PY{p}{,}
+    \PY{n+nb}{max}\PY{o}{=}\PY{l+m+mf}{0.01}\PY{p}{,}
+\PY{p}{)}
+\PY{n}{hp}\PY{o}{.}\PY{n}{graticule}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+/opt/anaconda3/envs/act\_notebooks/lib/python3.9/site-
+packages/healpy/projaxes.py:920: MatplotlibDeprecationWarning: You are modifying
+the state of a globally registered colormap. This has been deprecated since 3.3
+and in 3.6, you will not be able to modify a registered colormap in-place. To
+remove this warning, you can make a copy of the colormap first. cmap =
+mpl.cm.get\_cmap("viridis").copy()
+  newcm.set\_over(newcm(1.0))
+/opt/anaconda3/envs/act\_notebooks/lib/python3.9/site-
+packages/healpy/projaxes.py:921: MatplotlibDeprecationWarning: You are modifying
+the state of a globally registered colormap. This has been deprecated since 3.3
+and in 3.6, you will not be able to modify a registered colormap in-place. To
+remove this warning, you can make a copy of the colormap first. cmap =
+mpl.cm.get\_cmap("viridis").copy()
+  newcm.set\_under(bgcolor)
+/opt/anaconda3/envs/act\_notebooks/lib/python3.9/site-
+packages/healpy/projaxes.py:922: MatplotlibDeprecationWarning: You are modifying
+the state of a globally registered colormap. This has been deprecated since 3.3
+and in 3.6, you will not be able to modify a registered colormap in-place. To
+remove this warning, you can make a copy of the colormap first. cmap =
+mpl.cm.get\_cmap("viridis").copy()
+  newcm.set\_bad(badcolor)
+/opt/anaconda3/envs/act\_notebooks/lib/python3.9/site-
+packages/healpy/projaxes.py:202: MatplotlibDeprecationWarning: Passing
+parameters norm and vmin/vmax simultaneously is deprecated since 3.3 and will
+become an error two minor releases later. Please pass vmin/vmax directly to the
+norm when creating it.
+  aximg = self.imshow(
+/opt/anaconda3/envs/act\_notebooks/lib/python3.9/site-
+packages/healpy/projaxes.py:541: UserWarning: 0.0 180.0 -180.0 180.0
+  warnings.warn(
+/opt/anaconda3/envs/act\_notebooks/lib/python3.9/site-
+packages/healpy/projaxes.py:656: UserWarning: The interval between parallels is
+30 deg -0.00'.
+  warnings.warn(
+/opt/anaconda3/envs/act\_notebooks/lib/python3.9/site-
+packages/healpy/projaxes.py:664: UserWarning: The interval between meridians is
+30 deg -0.00'.
+  warnings.warn(
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_7_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Beam Maps
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{9}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{astropy}\PY{n+nn}{.}\PY{n+nn}{io}\PY{n+nn}{.}\PY{n+nn}{fits} \PY{k}{as} \PY{n+nn}{pf}
+\PY{k+kn}{import} \PY{n+nn}{pylab} \PY{c+c1}{\PYZsh{} only to produce plots}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{10}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{FITSfile} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{BeamWf\PYZus{}HFI\PYZus{}R3.01/Bl\PYZus{}T\PYZus{}R3.01\PYZus{}fullsky\PYZus{}353x353.fits}\PY{l+s+s1}{\PYZsq{}}
+
+\PY{n}{pf}\PY{o}{.}\PY{n}{info}\PY{p}{(}\PY{n}{FITSfile}\PY{p}{)} \PY{c+c1}{\PYZsh{} print list of extensions found in FITSfile}
+\PY{n}{data}\PY{p}{,} \PY{n}{header} \PY{o}{=} \PY{n}{pf}\PY{o}{.}\PY{n}{getdata}\PY{p}{(}\PY{n}{FITSfile}\PY{p}{,} \PY{n}{header}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}\PY{c+c1}{\PYZsh{}, 10, header=True) \PYZsh{} read extension \PYZsh{}10 (data and header)}
+\PY{c+c1}{\PYZsh{}data, header = pf.getdata(FITSfile100, \PYZsq{}100\PYZsq{}, header=True) \PYZsh{} read extension having EXTNAME=\PYZsq{}ABC\PYZsq{} (data and header)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{header}\PY{p}{)} \PY{c+c1}{\PYZsh{} print header}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{data}\PY{o}{.}\PY{n}{names}\PY{p}{)} \PY{c+c1}{\PYZsh{} print column names}
+\PY{n}{pylab}\PY{o}{.}\PY{n}{plot}\PY{p}{(} \PY{n}{data}\PY{o}{.}\PY{n}{field}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{)}\PY{o}{.}\PY{n}{flatten}\PY{p}{(}\PY{p}{)} \PY{p}{)} \PY{c+c1}{\PYZsh{} plot 1st column of binary table}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Filename: BeamWf\_HFI\_R3.01/Bl\_T\_R3.01\_fullsky\_353x353.fits
+No.    Name      Ver    Type      Cards   Dimensions   Format
+  0  PRIMARY       1 PrimaryHDU      19   ()
+  1  WINDOW FUNCTION    1 TableHDU        26   4001R x 1C   [E15.7]
+XTENSION= 'TABLE   '           / ASCII table extension
+BITPIX  =                    8 / array data type
+NAXIS   =                    2 / number of array dimensions
+NAXIS1  =                   15 / length of dimension 1
+NAXIS2  =                 4001 / length of dimension 2
+PCOUNT  =                    0 / number of group parameters
+GCOUNT  =                    1 / number of groups
+TFIELDS =                    1 / number of table fields
+TTYPE1  = 'TEMPERATURE'
+TFORM1  = 'E15.7   '
+TBCOL1  =                    1
+EXTNAME = 'WINDOW FUNCTION'    / extension name
+MAX-LPOL=                 4000 / Maximum L multipole
+POLAR   =                    F
+BCROSS  =                    F
+ASYMCL  =                    F
+COMMENT ----------------------------------------------------------------
+COMMENT Beam Window Function B(l)
+COMMENT Compatible with Healpix (synfast, smoothing, {\ldots}) and PolSpice
+COMMENT To be squared before applying to power spectrum
+COMMENT   C\_map(l) = C\_sky(l) * B(l)\^{}2
+COMMENT Adapted from
+COMMENT
+/redtruck/?????/m3space/quickbeam/quickpol/data/RD12rc3/beam\_matrix\_353xCOMMENT
+353\_l4000\_s6\_A000\_cmbfast\_0\_rbIMO\_rhIMO.npz                             COMMENT
+by ./qp2fits.py on 2016-06-15                                           COMMENT
+----------------------------------------------------------------        END
+['TEMPERATURE']
+    \end{Verbatim}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{10}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+[<matplotlib.lines.Line2D at 0x102eca520>]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_10_2.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{11}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{11}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+FITS\_rec([(1.0,), (0.99999952,), (0.99999863,), {\ldots}, (0.068820141,),
+          (0.068731263,), (0.068642475,)],
+         dtype=(numpy.record, [('TEMPERATURE', 'S15')]))
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{12}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Intensity Map (Planck) \PYZhy{} Foreground removed}
+
+
+\PY{n}{intensityCMB100} \PY{o}{=} \PY{n}{hp}\PY{o}{.}\PY{n}{read\PYZus{}map}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{COM\PYZus{}CMB\PYZus{}IQU\PYZhy{}100\PYZhy{}fgsub\PYZhy{}sevem\PYZhy{}field\PYZhy{}Int\PYZus{}2048\PYZus{}R2.01\PYZus{}full.fits}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{intensityCMB100}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+/opt/anaconda3/envs/act\_notebooks/lib/python3.9/site-
+packages/healpy/fitsfunc.py:368: UserWarning: If you are not specifying the
+input dtype and using the default np.float64 dtype of read\_map(), please
+consider that it will change in a future version to None as to keep the same
+dtype of the input file: please explicitly set the dtype if it is important to
+you.
+  warnings.warn(
+/opt/anaconda3/envs/act\_notebooks/lib/python3.9/site-
+packages/healpy/fitsfunc.py:391: UserWarning: NSIDE = 2048
+  warnings.warn("NSIDE = \{0:d\}".format(nside))
+/opt/anaconda3/envs/act\_notebooks/lib/python3.9/site-
+packages/healpy/fitsfunc.py:400: UserWarning: ORDERING = NESTED in fits file
+  warnings.warn("ORDERING = \{0:s\} in fits file".format(ordering))
+/opt/anaconda3/envs/act\_notebooks/lib/python3.9/site-
+packages/healpy/fitsfunc.py:426: UserWarning: No INDXSCHM keyword in header file
+: assume IMPLICIT
+  warnings.warn("No INDXSCHM keyword in header file : " "assume
+\{\}".format(schm))
+/opt/anaconda3/envs/act\_notebooks/lib/python3.9/site-
+packages/healpy/fitsfunc.py:428: UserWarning: INDXSCHM = IMPLICIT
+  warnings.warn("INDXSCHM = \{0:s\}".format(schm))
+/opt/anaconda3/envs/act\_notebooks/lib/python3.9/site-
+packages/healpy/fitsfunc.py:486: UserWarning: Ordering converted to RING
+  warnings.warn("Ordering converted to RING")
+    \end{Verbatim}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{12}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+array([-1.34818620e-04, -1.13565744e-04, -5.30425641e-05, {\ldots},
+        9.37869918e-05,  3.33317512e-05, -2.04297194e-05])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{13}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{hp}\PY{o}{.}\PY{n}{mollview}\PY{p}{(}
+    \PY{n}{intensityCMB100}\PY{p}{,}
+    \PY{n}{coord}\PY{o}{=}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{G}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{E}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{,}
+    \PY{n}{title}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Intensity CMB}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{n}{unit}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{mK}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{n}{norm}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{hist}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{n+nb}{min}\PY{o}{=}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.01}\PY{p}{,}
+    \PY{n+nb}{max}\PY{o}{=}\PY{l+m+mf}{0.01}\PY{p}{,}
+\PY{p}{)}
+\PY{n}{hp}\PY{o}{.}\PY{n}{graticule}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+/opt/anaconda3/envs/act\_notebooks/lib/python3.9/site-
+packages/healpy/projaxes.py:920: MatplotlibDeprecationWarning: You are modifying
+the state of a globally registered colormap. This has been deprecated since 3.3
+and in 3.6, you will not be able to modify a registered colormap in-place. To
+remove this warning, you can make a copy of the colormap first. cmap =
+mpl.cm.get\_cmap("viridis").copy()
+  newcm.set\_over(newcm(1.0))
+/opt/anaconda3/envs/act\_notebooks/lib/python3.9/site-
+packages/healpy/projaxes.py:921: MatplotlibDeprecationWarning: You are modifying
+the state of a globally registered colormap. This has been deprecated since 3.3
+and in 3.6, you will not be able to modify a registered colormap in-place. To
+remove this warning, you can make a copy of the colormap first. cmap =
+mpl.cm.get\_cmap("viridis").copy()
+  newcm.set\_under(bgcolor)
+/opt/anaconda3/envs/act\_notebooks/lib/python3.9/site-
+packages/healpy/projaxes.py:922: MatplotlibDeprecationWarning: You are modifying
+the state of a globally registered colormap. This has been deprecated since 3.3
+and in 3.6, you will not be able to modify a registered colormap in-place. To
+remove this warning, you can make a copy of the colormap first. cmap =
+mpl.cm.get\_cmap("viridis").copy()
+  newcm.set\_bad(badcolor)
+/opt/anaconda3/envs/act\_notebooks/lib/python3.9/site-
+packages/healpy/projaxes.py:202: MatplotlibDeprecationWarning: Passing
+parameters norm and vmin/vmax simultaneously is deprecated since 3.3 and will
+become an error two minor releases later. Please pass vmin/vmax directly to the
+norm when creating it.
+  aximg = self.imshow(
+/opt/anaconda3/envs/act\_notebooks/lib/python3.9/site-
+packages/healpy/projaxes.py:541: UserWarning: 0.0 180.0 -180.0 180.0
+  warnings.warn(
+/opt/anaconda3/envs/act\_notebooks/lib/python3.9/site-
+packages/healpy/projaxes.py:656: UserWarning: The interval between parallels is
+30 deg -0.00'.
+  warnings.warn(
+/opt/anaconda3/envs/act\_notebooks/lib/python3.9/site-
+packages/healpy/projaxes.py:664: UserWarning: The interval between meridians is
+30 deg -0.00'.
+  warnings.warn(
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_13_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{14}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{intensityCMB217} \PY{o}{=} \PY{n}{hp}\PY{o}{.}\PY{n}{read\PYZus{}map}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{COM\PYZus{}CMB\PYZus{}IQU\PYZhy{}217\PYZhy{}fgsub\PYZhy{}sevem\PYZhy{}field\PYZhy{}Int\PYZus{}2048\PYZus{}R2.01\PYZus{}full.fits}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{intensityCMB217}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{14}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+array([-1.45112805e-04, -9.79054021e-05, -8.30674253e-05, {\ldots},
+        1.03153470e-04,  9.47897715e-05,  8.28015836e-05])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{15}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{hp}\PY{o}{.}\PY{n}{mollview}\PY{p}{(}
+    \PY{n}{intensityCMB217}\PY{p}{,}
+    \PY{n}{coord}\PY{o}{=}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{G}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{E}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{,}
+    \PY{n}{title}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Intensity CMB}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{n}{unit}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{mK}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{n}{norm}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{hist}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{n+nb}{min}\PY{o}{=}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.01}\PY{p}{,}
+    \PY{n+nb}{max}\PY{o}{=}\PY{l+m+mf}{0.01}\PY{p}{,}
+\PY{p}{)}
+\PY{n}{hp}\PY{o}{.}\PY{n}{graticule}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_15_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    WMAP
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{16}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{!}pwd
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+/Users/tony/project\_planckVsWMAP
+    \end{Verbatim}
+
+    \hypertarget{computing-the-planck-cmb-temperature-power-spectrum-with-healpy-anafast}{%
+\subsubsection{Computing the Planck CMB temperature power spectrum with
+healpy
+anafast}\label{computing-the-planck-cmb-temperature-power-spectrum-with-healpy-anafast}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{17}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{healpy} \PY{k}{as} \PY{n+nn}{hp}
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+\PY{k+kn}{import} \PY{n+nn}{os}
+\PY{k+kn}{import} \PY{n+nn}{astropy}\PY{n+nn}{.}\PY{n+nn}{units} \PY{k}{as} \PY{n+nn}{u}
+\PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
+\PY{o}{\PYZpc{}}\PY{k}{matplotlib} inline
+\end{Verbatim}
+\end{tcolorbox}
+
+    \#step 1: First we load the Planck data release 3 CMB-only temperature
+produced by Commander by separating it out from galactic foregrounds:
+
+    .
+
+    Tool used
+
+!curl
+``https://irsa.ipac.caltech.edu/data/Planck/release\_3/all-sky-maps/maps/component-maps/cmb/COM\_CMB\_IQU-commander\_2048\_R3.00\_full.fits''
+-o COM\_CMB\_IQU-commander\_2048\_R3.00\_full.fits
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{18}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{filename} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{COM\PYZus{}CMB\PYZus{}IQU\PYZhy{}commander\PYZus{}2048\PYZus{}R3.00\PYZus{}full.fits}\PY{l+s+s1}{\PYZsq{}}
+\PY{n}{cmb\PYZus{}map} \PY{o}{=} \PY{n}{hp}\PY{o}{.}\PY{n}{read\PYZus{}map}\PY{p}{(}\PY{n}{filename}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \#loading masks file
+
+    Tool used
+
+!curl
+``https://irsa.ipac.caltech.edu/data/Planck/release\_3/ancillary-data/masks/COM\_Mask\_CMB-common-Mask-Int\_2048\_R3.00.fits''
+-o COM\_Mask\_CMB-common-Mask-Int\_2048\_R3.00.fits
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{19}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Visualising cmb\PYZus{}map}
+\PY{n}{hp}\PY{o}{.}\PY{n}{mollview}\PY{p}{(}\PY{n}{cmb\PYZus{}map}\PY{p}{,} \PY{n+nb}{min}\PY{o}{=}\PY{o}{\PYZhy{}}\PY{l+m+mf}{1e\PYZhy{}3}\PY{p}{,} \PY{n+nb}{max}\PY{o}{=}\PY{l+m+mf}{1e\PYZhy{}3}\PY{p}{,} \PY{n}{title}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{CMB only temperature map}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{unit}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{K}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_26_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Observation: There is residual galactic emission we should mask. The
+contamination just close to the galactic plane, (we could run anafast
+and specify a few degrees of gal\_cut).
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{20}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}masking with one of the planck masks(earlier loaded)}
+\PY{n}{path} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{COM\PYZus{}Mask\PYZus{}CMB\PYZhy{}common\PYZhy{}Mask\PYZhy{}Int\PYZus{}2048\PYZus{}R3.00.fits}\PY{l+s+s1}{\PYZsq{}}
+\PY{n}{mask} \PY{o}{=} \PY{n}{hp}\PY{o}{.}\PY{n}{read\PYZus{}map}\PY{p}{(}\PY{n}{path}\PY{p}{)}
+\PY{n}{map\PYZus{}masked} \PY{o}{=} \PY{n}{hp}\PY{o}{.}\PY{n}{ma}\PY{p}{(}\PY{n}{cmb\PYZus{}map}\PY{p}{)}
+\PY{n}{map\PYZus{}masked}\PY{o}{.}\PY{n}{mask} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{logical\PYZus{}not}\PY{p}{(}\PY{n}{mask}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{21}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{mask}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{21}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+array([1., 1., 1., {\ldots}, 1., 1., 1.])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{22}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{map\PYZus{}masked}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{22}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+masked\_array(data=[-0.00014912881306372583, -0.00011455055937403813,
+                   -9.056342241819948e-05, {\ldots}, 0.00011307044769637287,
+                   9.498728468315676e-05, 0.00010467269021319225],
+             mask=[False, False, False, {\ldots}, False, False, False],
+       fill\_value=-1.6375e+30)
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{23}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{map\PYZus{}masked}\PY{o}{.}\PY{n}{mask}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{23}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+array([False, False, False, {\ldots}, False, False, False])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{24}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{hp}\PY{o}{.}\PY{n}{mollview}\PY{p}{(}\PY{n}{map\PYZus{}masked}\PY{p}{,} \PY{n+nb}{min}\PY{o}{=}\PY{o}{\PYZhy{}}\PY{l+m+mf}{1e\PYZhy{}3}\PY{p}{,} \PY{n+nb}{max}\PY{o}{=}\PY{l+m+mf}{1e\PYZhy{}3}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_32_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Now,we can load the binned TT CMB power spectrum:
+
+    Tool used
+
+!curl
+``https://irsa.ipac.caltech.edu/data/Planck/release\_3/ancillary-data/cosmoparams/COM\_PowerSpect\_CMB-TT-binned\_R3.01.txt''
+-o COM\_PowerSpect\_CMB-TT-binned\_R3.01.txt
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{25}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{o}{!}head \PYZhy{}3 COM\PYZus{}PowerSpect\PYZus{}CMB\PYZhy{}TT\PYZhy{}binned\PYZus{}R3.01.txt          \PYZsh{}use of header info?
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+\# l                Dl               -dDl             +dDl             BestFit
+  4.77112240e+01   1.47933552e+03   5.07654876e+01   5.07654876e+01
+1.46111304e+03
+  7.64716065e+01   2.03496833e+03   5.47101576e+01   5.47101576e+01
+2.06238073e+03
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{26}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{cmb\PYZus{}binned\PYZus{}spectrum} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{loadtxt}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{COM\PYZus{}PowerSpect\PYZus{}CMB\PYZhy{}TT\PYZhy{}binned\PYZus{}R3.01.txt}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{27}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{cmb\PYZus{}binned\PYZus{}spectrum}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{27}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+array([[4.77112240e+01, 1.47933552e+03, 5.07654876e+01, 5.07654876e+01,
+        1.46111304e+03],
+       [7.64716065e+01, 2.03496833e+03, 5.47101576e+01, 5.47101576e+01,
+        2.06238073e+03],
+       [1.05917385e+02, 2.95539416e+03, 6.49766440e+01, 6.49766440e+01,
+        2.90452526e+03],
+       [1.35605348e+02, 3.86951392e+03, 7.69143744e+01, 7.69143744e+01,
+        3.90248963e+03],
+       [1.65405597e+02, 4.88946506e+03, 8.65856259e+01, 8.65856259e+01,
+        4.86135537e+03],
+       [1.95266870e+02, 5.46410945e+03, 9.05533459e+01, 9.05533459e+01,
+        5.53480715e+03],
+       [2.25164945e+02, 5.79343954e+03, 8.71348811e+01, 8.71348811e+01,
+        5.72693135e+03],
+       [2.55086908e+02, 5.37288375e+03, 7.69383697e+01, 7.69383697e+01,
+        5.37498113e+03],
+       [2.85025248e+02, 4.62767753e+03, 6.25199141e+01, 6.25199141e+01,
+        4.58832266e+03],
+       [3.14975304e+02, 3.60423851e+03, 4.71589439e+01, 4.71589439e+01,
+        3.59689801e+03],
+       [3.44934027e+02, 2.63120029e+03, 3.38762191e+01, 3.38762191e+01,
+        2.66745188e+03],
+       [3.74899344e+02, 2.03305943e+03, 2.48190562e+01, 2.48190562e+01,
+        2.01816864e+03],
+       [4.04869791e+02, 1.75336253e+03, 2.07109083e+01, 2.07109083e+01,
+        1.74834025e+03],
+       [4.34844309e+02, 1.78757901e+03, 2.06713695e+01, 2.06713695e+01,
+        1.82192489e+03],
+       [4.64822111e+02, 2.16204649e+03, 2.27523861e+01, 2.27523861e+01,
+        2.09823728e+03],
+       [4.94802601e+02, 2.42208480e+03, 2.49726104e+01, 2.49726104e+01,
+        2.39772998e+03],
+       [5.24785320e+02, 2.57348050e+03, 2.59184118e+01, 2.59184118e+01,
+        2.57144487e+03],
+       [5.54769905e+02, 2.54629768e+03, 2.50510538e+01, 2.50510538e+01,
+        2.55180645e+03],
+       [5.84756069e+02, 2.36064530e+03, 2.27209283e+01, 2.27209283e+01,
+        2.36436140e+03],
+       [6.14743583e+02, 2.09543505e+03, 1.98505488e+01, 1.98505488e+01,
+        2.10480607e+03],
+       [6.44732258e+02, 1.88467698e+03, 1.75025264e+01, 1.75025264e+01,
+        1.89096016e+03],
+       [6.74721939e+02, 1.81316288e+03, 1.64306044e+01, 1.64306044e+01,
+        1.81252216e+03],
+       [7.04712498e+02, 1.88319393e+03, 1.67990643e+01, 1.67990643e+01,
+        1.89672650e+03],
+       [7.34703827e+02, 2.09713072e+03, 1.81645476e+01, 1.81645476e+01,
+        2.10225612e+03],
+       [7.64695836e+02, 2.31873584e+03, 1.97363538e+01, 1.97363538e+01,
+        2.33880907e+03],
+       [7.94688447e+02, 2.46458129e+03, 2.07062220e+01, 2.07062220e+01,
+        2.50417440e+03],
+       [8.24681596e+02, 2.52191260e+03, 2.05197620e+01, 2.05197620e+01,
+        2.52277302e+03],
+       [8.54675226e+02, 2.39412077e+03, 1.90381031e+01, 1.90381031e+01,
+        2.37141912e+03],
+       [8.84669287e+02, 2.08333867e+03, 1.65790348e+01, 1.65790348e+01,
+        2.08335227e+03],
+       [9.14663738e+02, 1.74072841e+03, 1.37374917e+01, 1.37374917e+01,
+        1.73253226e+03],
+       [9.44658541e+02, 1.41867342e+03, 1.11420483e+01, 1.11420483e+01,
+        1.40502882e+03],
+       [9.74653663e+02, 1.17295424e+03, 9.28646475e+00, 9.28646475e+00,
+        1.17014623e+03],
+       [1.00464908e+03, 1.06240462e+03, 8.37987000e+00, 8.37987000e+00,
+        1.05887288e+03],
+       [1.03464476e+03, 1.04786241e+03, 8.30074773e+00, 8.30074773e+00,
+        1.05936420e+03],
+       [1.06464068e+03, 1.13235191e+03, 8.68575434e+00, 8.68575434e+00,
+        1.12669220e+03],
+       [1.09463683e+03, 1.21101851e+03, 9.11274984e+00, 9.11274984e+00,
+        1.20298244e+03],
+       [1.12463318e+03, 1.23187224e+03, 9.26050628e+00, 9.26050628e+00,
+        1.23858790e+03],
+       [1.15462972e+03, 1.20578050e+03, 8.98528122e+00, 8.98528122e+00,
+        1.20804315e+03],
+       [1.18462643e+03, 1.11792662e+03, 8.33171031e+00, 8.33171031e+00,
+        1.11502109e+03],
+       [1.21462331e+03, 9.68422243e+02, 7.54508665e+00, 7.54508665e+00,
+        9.86438951e+02],
+       [1.24462034e+03, 8.64397967e+02, 6.64322644e+00, 6.64322644e+00,
+        8.59469330e+02],
+       [1.27461751e+03, 7.61605936e+02, 5.98585735e+00, 5.98585735e+00,
+        7.66845300e+02],
+       [1.30461481e+03, 7.32339633e+02, 5.68666086e+00, 5.68666086e+00,
+        7.25319871e+02],
+       [1.33461223e+03, 7.37290337e+02, 5.71800485e+00, 5.71800485e+00,
+        7.31898515e+02],
+       [1.36460976e+03, 7.74925851e+02, 5.94089388e+00, 5.94089388e+00,
+        7.67047643e+02],
+       [1.39460740e+03, 8.06625346e+02, 6.17243469e+00, 6.17243469e+00,
+        8.03588527e+02],
+       [1.42460514e+03, 8.09057064e+02, 6.25632882e+00, 6.25632882e+00,
+        8.16784389e+02],
+       [1.45460297e+03, 7.77751089e+02, 6.11143430e+00, 6.11143430e+00,
+        7.92658706e+02],
+       [1.48460089e+03, 7.28943580e+02, 5.74544667e+00, 5.74544667e+00,
+        7.31230681e+02],
+       [1.51459890e+03, 6.48288645e+02, 5.24258624e+00, 5.24258624e+00,
+        6.44972815e+02],
+       [1.54459698e+03, 5.51286111e+02, 4.72393254e+00, 4.72393254e+00,
+        5.52838213e+02],
+       [1.57459513e+03, 4.76600995e+02, 4.30079600e+00, 4.30079600e+00,
+        4.73410287e+02],
+       [1.60459335e+03, 4.19541270e+02, 4.04442416e+00, 4.04442416e+00,
+        4.18888542e+02],
+       [1.63459164e+03, 3.95211496e+02, 3.96833591e+00, 3.96833591e+00,
+        3.92152600e+02],
+       [1.66458999e+03, 3.91657847e+02, 4.03423921e+00, 4.03423921e+00,
+        3.87313797e+02],
+       [1.69458839e+03, 3.92947519e+02, 4.17356282e+00, 4.17356282e+00,
+        3.93097715e+02],
+       [1.72458686e+03, 3.97735803e+02, 4.31665510e+00, 4.31665510e+00,
+        3.97391812e+02],
+       [1.75458537e+03, 3.83011743e+02, 4.41586492e+00, 4.41586492e+00,
+        3.91427360e+02],
+       [1.78458394e+03, 3.75391143e+02, 4.45733427e+00, 4.45733427e+00,
+        3.71983403e+02],
+       [1.81458255e+03, 3.40139516e+02, 4.45892926e+00, 4.45892926e+00,
+        3.41585903e+02],
+       [1.84458121e+03, 3.07539268e+02, 4.45749277e+00, 4.45749277e+00,
+        3.06532670e+02],
+       [1.87457991e+03, 2.73859536e+02, 4.49350451e+00, 4.49350451e+00,
+        2.74153525e+02],
+       [1.90457865e+03, 2.49846901e+02, 4.59652807e+00, 4.59652807e+00,
+        2.50006349e+02],
+       [1.93457743e+03, 2.44246300e+02, 4.77758093e+00, 4.77758093e+00,
+        2.36236579e+02],
+       [1.96457625e+03, 2.31913142e+02, 5.02866666e+00, 5.02866666e+00,
+        2.31349665e+02],
+       [1.99457510e+03, 2.34658998e+02, 5.42839879e+00, 5.42839879e+00,
+        2.31209089e+02],
+       [2.02457399e+03, 2.31744942e+02, 5.86880339e+00, 5.86880339e+00,
+        2.30818750e+02],
+       [2.05457291e+03, 2.19660112e+02, 6.20024969e+00, 6.20024969e+00,
+        2.26094532e+02],
+       [2.08457186e+03, 2.14252650e+02, 6.53323083e+00, 6.53323083e+00,
+        2.15102553e+02],
+       [2.11457084e+03, 1.96716713e+02, 6.87393629e+00, 6.87393629e+00,
+        1.98340298e+02],
+       [2.14456985e+03, 1.76431323e+02, 7.23789713e+00, 7.23789713e+00,
+        1.78237039e+02],
+       [2.17456889e+03, 1.52227062e+02, 7.64417922e+00, 7.64417922e+00,
+        1.58049842e+02],
+       [2.20456795e+03, 1.38671109e+02, 8.10965997e+00, 8.10965997e+00,
+        1.40733305e+02],
+       [2.23456704e+03, 1.21459219e+02, 8.64541703e+00, 8.64541703e+00,
+        1.28004092e+02],
+       [2.26456615e+03, 1.16155153e+02, 9.25556670e+00, 9.25556670e+00,
+        1.20051892e+02],
+       [2.29456529e+03, 1.17768892e+02, 9.93861339e+00, 9.93861339e+00,
+        1.15705770e+02],
+       [2.32456444e+03, 1.16129438e+02, 1.06905048e+01, 1.06905048e+01,
+        1.13100669e+02],
+       [2.35456362e+03, 1.09714703e+02, 1.15085752e+01, 1.15085752e+01,
+        1.10345705e+02],
+       [2.38456282e+03, 1.20361413e+02, 1.23926722e+01, 1.23926722e+01,
+        1.06139560e+02],
+       [2.41456204e+03, 9.04515698e+01, 1.33433129e+01, 1.33433129e+01,
+        1.00105444e+02],
+       [2.44456128e+03, 1.03080972e+02, 1.43819739e+01, 1.43819739e+01,
+        9.26666904e+01],
+       [2.47456054e+03, 7.36743738e+01, 1.55113561e+01, 1.55113561e+01,
+        8.48106882e+01],
+       [2.49902400e+03, 6.13290585e+01, 2.09398269e+01, 2.09398269e+01,
+        7.87736295e+01]])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{computing-the-power-spectrum}{%
+\paragraph{Computing the power
+spectrum}\label{computing-the-power-spectrum}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{28}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{lmax} \PY{o}{=} \PY{l+m+mi}{3000}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{29}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{test\PYZus{}cls\PYZus{}meas\PYZus{}frommap} \PY{o}{=} \PY{n}{hp}\PY{o}{.}\PY{n}{anafast}\PY{p}{(}\PY{n}{map\PYZus{}masked}\PY{p}{,} \PY{n}{lmax}\PY{o}{=}\PY{n}{lmax}\PY{p}{,} \PY{n}{use\PYZus{}pixel\PYZus{}weights}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}    \PY{c+c1}{\PYZsh{}used \PYZdq{}use\PYZus{}pixel\PYZus{}weights=True\PYZdq{} arg to have a more precise power spectrum}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{30}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{ll} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{n}{lmax}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}
+\PY{n}{ll}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{30}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+array([   0,    1,    2, {\ldots}, 2998, 2999, 3000])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{31}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{sky\PYZus{}fraction} \PY{o}{=} \PY{n+nb}{len}\PY{p}{(}\PY{n}{map\PYZus{}masked}\PY{o}{.}\PY{n}{compressed}\PY{p}{(}\PY{p}{)}\PY{p}{)} \PY{o}{/} \PY{n+nb}{len}\PY{p}{(}\PY{n}{map\PYZus{}masked}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{32}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{The map covers }\PY{l+s+si}{\PYZob{}}\PY{n}{sky\PYZus{}fraction}\PY{l+s+si}{:}\PY{l+s+s2}{.1\PYZpc{}}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ of the sky}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+The map covers 77.9\% of the sky
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{33}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{plt}\PY{o}{.}\PY{n}{style}\PY{o}{.}\PY{n}{use}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{seaborn\PYZhy{}poster}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}       \PY{c+c1}{\PYZsh{}read more on style used}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{34}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{k2muK} \PY{o}{=} \PY{l+m+mf}{1e6}
+\end{Verbatim}
+\end{tcolorbox}
+
+    Power spectra are generally plotted as \(D_\ell\) which is defined as
+\(\dfrac{\ell(\ell+1)}{2 \pi}C_\ell\), so we need to apply that factor
+to the \(C_\ell\) calculated from the map.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{35}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{cmb\PYZus{}binned\PYZus{}spectrum}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{cmb\PYZus{}binned\PYZus{}spectrum}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{alpha}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Planck 2018 PS release}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{ll}\PY{p}{,} \PY{n}{ll}\PY{o}{*}\PY{p}{(}\PY{n}{ll}\PY{o}{+}\PY{l+m+mf}{1.}\PY{p}{)}\PY{o}{*}\PY{n}{test\PYZus{}cls\PYZus{}meas\PYZus{}frommap}\PY{o}{*}\PY{n}{k2muK}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{o}{/}\PY{l+m+mf}{2.}\PY{o}{/}\PY{n}{np}\PY{o}{.}\PY{n}{pi} \PY{o}{/} \PY{n}{sky\PYZus{}fraction}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{alpha}\PY{o}{=}\PY{l+m+mf}{0.6}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Planck 2018 PS from Data Map}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+sa}{r}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZdl{}}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{ell\PYZdl{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+sa}{r}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZdl{}D\PYZus{}}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{ell\PYZti{}[}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{mu K\PYZca{}2]\PYZdl{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{grid}\PY{p}{(}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{legend}\PY{p}{(}\PY{n}{loc}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{best}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{35}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<matplotlib.legend.Legend at 0x10ddcb160>
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_47_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{beam-correction}{%
+\subsubsection{Beam Correction}\label{beam-correction}}
+
+    Reading the documentation of the Planck release we see that the output
+has a resolution of 5 arcminutes. Therefore as a first order correction
+of the beam, we can divide the power spectrum by the square of the beam
+window function.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{36}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{w\PYZus{}ell} \PY{o}{=} \PY{n}{hp}\PY{o}{.}\PY{n}{gauss\PYZus{}beam}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{5}\PY{o}{*}\PY{n}{u}\PY{o}{.}\PY{n}{arcmin}\PY{p}{)}\PY{o}{.}\PY{n}{to\PYZus{}value}\PY{p}{(}\PY{n}{u}\PY{o}{.}\PY{n}{radian}\PY{p}{)}\PY{p}{,} \PY{n}{lmax}\PY{o}{=}\PY{n}{lmax}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{37}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{cmb\PYZus{}binned\PYZus{}spectrum}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{cmb\PYZus{}binned\PYZus{}spectrum}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{alpha}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Planck 2018 PS release}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{ll}\PY{p}{,} \PY{n}{ll}\PY{o}{*}\PY{p}{(}\PY{n}{ll}\PY{o}{+}\PY{l+m+mf}{1.}\PY{p}{)}\PY{o}{*}\PY{n}{test\PYZus{}cls\PYZus{}meas\PYZus{}frommap}\PY{o}{*}\PY{n}{k2muK}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{o}{/}\PY{l+m+mf}{2.}\PY{o}{/}\PY{n}{np}\PY{o}{.}\PY{n}{pi} \PY{o}{/} \PY{n}{sky\PYZus{}fraction} \PY{o}{/} \PY{n}{w\PYZus{}ell}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{,}
+         \PY{n}{alpha}\PY{o}{=}\PY{l+m+mf}{0.6}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Planck 2018 PS from Data Map (beam corrected)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+sa}{r}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZdl{}}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{ell\PYZdl{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+sa}{r}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZdl{}D\PYZus{}}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{ell\PYZti{}[}\PY{l+s+s1}{\PYZbs{}}\PY{l+s+s1}{mu K\PYZca{}2]\PYZdl{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{grid}\PY{p}{(}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{legend}\PY{p}{(}\PY{n}{loc}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{best}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{;}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_51_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Intermediate(Getting Clean Map used for analysis)
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{38}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{pixell} \PY{k+kn}{import} \PY{n}{enmap}\PY{p}{,} \PY{n}{utils}
+\PY{k+kn}{from} \PY{n+nn}{astropy}\PY{n+nn}{.}\PY{n+nn}{io} \PY{k+kn}{import} \PY{n}{fits}
+\PY{k+kn}{from} \PY{n+nn}{astropy}\PY{n+nn}{.}\PY{n+nn}{utils}\PY{n+nn}{.}\PY{n+nn}{data} \PY{k+kn}{import} \PY{n}{get\PYZus{}pkg\PYZus{}data\PYZus{}filename}
+\PY{k+kn}{from} \PY{n+nn}{astropy}\PY{n+nn}{.}\PY{n+nn}{convolution} \PY{k+kn}{import} \PY{n}{Gaussian2DKernel}
+\PY{k+kn}{from} \PY{n+nn}{scipy}\PY{n+nn}{.}\PY{n+nn}{signal} \PY{k+kn}{import} \PY{n}{convolve} \PY{k}{as} \PY{n}{scipy\PYZus{}convolve}
+\PY{k+kn}{from} \PY{n+nn}{astropy}\PY{n+nn}{.}\PY{n+nn}{convolution} \PY{k+kn}{import} \PY{n}{convolve}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{39}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Load the data }
+\PY{n}{filename} \PY{o}{=} \PY{n}{get\PYZus{}pkg\PYZus{}data\PYZus{}filename}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ffp10\PYZus{}newdust\PYZus{}total\PYZus{}030\PYZus{}full\PYZus{}map.fits}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{hdu} \PY{o}{=} \PY{n}{fits}\PY{o}{.}\PY{n}{open}\PY{p}{(}\PY{n}{filename}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{40}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{hdu}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{40}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+<astropy.io.fits.hdu.image.PrimaryHDU at 0x142386670>
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{41}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{astropy}\PY{n+nn}{.}\PY{n+nn}{convolution} \PY{k+kn}{import} \PY{n}{Gaussian1DKernel}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{42}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}the convolution module also includes built\PYZhy{}in kernels that can be imported as}
+
+\PY{n}{gauss} \PY{o}{=} \PY{n}{Gaussian1DKernel}\PY{p}{(}\PY{n}{stddev}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{43}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{gauss}\PY{o}{.}\PY{n}{array} 
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{43}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+array([6.69151129e-05, 4.36341348e-04, 2.21592421e-03, 8.76415025e-03,
+       2.69954833e-02, 6.47587978e-02, 1.20985362e-01, 1.76032663e-01,
+       1.99471140e-01, 1.76032663e-01, 1.20985362e-01, 6.47587978e-02,
+       2.69954833e-02, 8.76415025e-03, 2.21592421e-03, 4.36341348e-04,
+       6.69151129e-05])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    The kernel can then be used directly when calling convolve()
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{bingo}{%
+\subsubsection{Bingo}\label{bingo}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{44}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{NSIDE} \PY{o}{=} \PY{l+m+mi}{1024}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Approximate resolution at NSIDE }\PY{l+s+si}{\PYZob{}\PYZcb{}}\PY{l+s+s2}{ is }\PY{l+s+si}{\PYZob{}:.2\PYZcb{}}\PY{l+s+s2}{ deg}\PY{l+s+s2}{\PYZdq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}
+        \PY{n}{NSIDE}\PY{p}{,} \PY{n}{hp}\PY{o}{.}\PY{n}{nside2resol}\PY{p}{(}\PY{n}{NSIDE}\PY{p}{,} \PY{n}{arcmin}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)} \PY{o}{/} \PY{l+m+mi}{60}
+\PY{p}{)} \PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Approximate resolution at NSIDE 1024 is 0.057 deg
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{45}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{NPIX} \PY{o}{=} \PY{n}{hp}\PY{o}{.}\PY{n}{nside2npix}\PY{p}{(}\PY{n}{NSIDE}\PY{p}{)} 
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{NPIX}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+12582912
+    \end{Verbatim}
+
+    getting alms of map(sample) used from Planck
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{46}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{hp}\PY{o}{.}\PY{n}{sphtfunc}\PY{o}{.}\PY{n}{map2alm}\PY{p}{(}\PY{n}{map\PYZus{}sample}\PY{p}{,} \PY{n}{lmax}\PY{o}{=}\PY{l+m+mi}{1300}\PY{p}{,} \PY{n}{mmax}\PY{o}{=}\PY{k+kc}{None}\PY{p}{,} \PY{n+nb}{iter}\PY{o}{=}\PY{l+m+mi}{3}\PY{p}{,} \PY{n}{pol}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,} \PY{n}{use\PYZus{}weights}\PY{o}{=}\PY{k+kc}{False}\PY{p}{,} \PY{n}{datapath}\PY{o}{=}\PY{k+kc}{None}\PY{p}{,} \PY{n}{gal\PYZus{}cut}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{use\PYZus{}pixel\PYZus{}weights}\PY{o}{=}\PY{k+kc}{False}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{46}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+array([ 1.16211765e-03+0.00000000e+00j, -1.29597927e-05+0.00000000e+00j,
+       -1.32805698e-03+0.00000000e+00j, {\ldots},
+        2.49503412e-08-4.73206538e-08j, -1.51505776e-08-3.88394977e-08j,
+       -2.92800850e-08-3.33140654e-08j])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{nb-the-pixels-which-have-the-special-unseen-value-are-replaced-by-zeros-before-spherical-harmonic-transform.-they-are-converted-back-to-unseen-value-so-that-the-input-maps-are-not-modified.-each-map-have-its-own-independent-mask.}{%
+\subsubsection{NB: The pixels which have the special UNSEEN value are
+replaced by zeros before spherical harmonic transform. They are
+converted back to UNSEEN value, so that the input maps are not modified.
+Each map have its own, independent
+mask.}\label{nb-the-pixels-which-have-the-special-unseen-value-are-replaced-by-zeros-before-spherical-harmonic-transform.-they-are-converted-back-to-unseen-value-so-that-the-input-maps-are-not-modified.-each-map-have-its-own-independent-mask.}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{101}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}pol=false}
+\PY{n}{alm} \PY{o}{=} \PY{n}{hp}\PY{o}{.}\PY{n}{sphtfunc}\PY{o}{.}\PY{n}{map2alm}\PY{p}{(}\PY{n}{map\PYZus{}sample}\PY{p}{,} \PY{n}{lmax}\PY{o}{=}\PY{l+m+mi}{1300}\PY{p}{,} \PY{n}{mmax}\PY{o}{=}\PY{k+kc}{None}\PY{p}{,} \PY{n+nb}{iter}\PY{o}{=}\PY{l+m+mi}{3}\PY{p}{,} \PY{n}{pol}\PY{o}{=}\PY{k+kc}{False}\PY{p}{,} \PY{n}{use\PYZus{}weights}\PY{o}{=}\PY{k+kc}{False}\PY{p}{,} \PY{n}{datapath}\PY{o}{=}\PY{k+kc}{None}\PY{p}{,} \PY{n}{gal\PYZus{}cut}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{use\PYZus{}pixel\PYZus{}weights}\PY{o}{=}\PY{k+kc}{False}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{102}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{alm}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{102}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+array([ 1.16211765e-03+0.00000000e+00j, -1.29597927e-05+0.00000000e+00j,
+       -1.32805698e-03+0.00000000e+00j, {\ldots},
+        2.49503412e-08-4.73206538e-08j, -1.51505776e-08-3.88394977e-08j,
+       -2.92800850e-08-3.33140654e-08j])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    " Multiply alm by a function of l. The function is assumed to be zero
+where not defined.
+
+Parameters almarray The alm to multiply
+
+flarray The function (at l=0..fl.size-1) by which alm must be
+multiplied.
+
+mmaxNone or int, optional The maximum m defining the alm layout.
+Default: lmax.
+
+inplacebool, optional If True, modify the given alm, otherwise make a
+copy before multiplying.
+
+Returns almarray The modified alm, either a new array or a reference to
+input alm, if inplace is True. "
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{103}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{np}\PY{o}{.}\PY{n}{shape}\PY{p}{(}\PY{n}{alm}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{103}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+(846951,)
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{104}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{alm}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{104}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+array([ 1.16211765e-03+0.00000000e+00j, -1.29597927e-05+0.00000000e+00j,
+       -1.32805698e-03+0.00000000e+00j, {\ldots},
+        2.49503412e-08-4.73206538e-08j, -1.51505776e-08-3.88394977e-08j,
+       -2.92800850e-08-3.33140654e-08j])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{105}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}fl = w\PYZus{}ell   \PYZsh{}see power spectra step, deriv of beam function used as fl (function of l)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{106}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}hp.sphtfunc.almxfl(alm , fl, mmax=None, inplace=True)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{107}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{alm}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{107}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+array([ 1.16211765e-03+0.00000000e+00j, -1.29597927e-05+0.00000000e+00j,
+       -1.32805698e-03+0.00000000e+00j, {\ldots},
+        2.49503412e-08-4.73206538e-08j, -1.51505776e-08-3.88394977e-08j,
+       -2.92800850e-08-3.33140654e-08j])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    applying a spherical harmonic transform back to map space (hp.alm2map),
+using Nside = 1024.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{108}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}hp.sphtfunc.alm2map(alm, nside=1024, lmax=lmax, mmax=None, pixwin=False, fwhm=0.0, sigma=None, pol=True, inplace=False, verbose=True)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{91}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}mmax = 1300}
+\PY{c+c1}{\PYZsh{}checking size of alm}
+\PY{p}{(}\PY{n}{mmax} \PY{o}{*} \PY{p}{(}\PY{l+m+mi}{2} \PY{o}{*} \PY{n}{lmax} \PY{o}{+} \PY{l+m+mi}{1} \PY{o}{\PYZhy{}} \PY{n}{mmax}\PY{p}{)}\PY{p}{)} \PY{o}{/} \PY{p}{(}\PY{l+m+mi}{2} \PY{o}{+} \PY{n}{lmax} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{91}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+2035.064935064935
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{94}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}resize alm}
+\PY{c+c1}{\PYZsh{}alm\PYZus{}resize= np.resize(alm,2035)}
+\PY{c+c1}{\PYZsh{}alm\PYZus{}resize}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{115}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}pol=false polarisatn}
+\PY{c+c1}{\PYZsh{}hp.sphtfunc.alm2map(alm,nside=16, lmax=lmax, mmax=None, pixwin=False, fwhm=0.0, sigma=None, pol=False, inplace=False, verbose=True)}
+\PY{n}{new\PYZus{}map}\PY{o}{=}\PY{n}{hp}\PY{o}{.}\PY{n}{sphtfunc}\PY{o}{.}\PY{n}{alm2map}\PY{p}{(}\PY{n}{alm}\PY{p}{,}\PY{n}{nside}\PY{o}{=}\PY{l+m+mi}{1024}\PY{p}{)} \PY{c+c1}{\PYZsh{}, mmax=None, pixwin=False, fwhm=0.0, sigma=None, pol=False, inplace=False, verbose=True)}
+\PY{n}{new\PYZus{}map}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{115}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+array([-0.00018566, -0.00016411, -0.00019511, {\ldots}, -0.00013042,
+       -0.0001177 , -0.0001039 ])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{116}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{np}\PY{o}{.}\PY{n}{shape}\PY{p}{(}\PY{n}{new\PYZus{}map}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{116}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+(12582912,)
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{117}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{np}\PY{o}{.}\PY{n}{shape}\PY{p}{(}\PY{n}{alm}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{117}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+(846951,)
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{118}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{np}\PY{o}{.}\PY{n}{shape}\PY{p}{(}\PY{n}{map\PYZus{}sample}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{118}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+(12582912,)
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{visualise}{%
+\subsection{visualise}\label{visualise}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+    Alternative approach for alm2map \#\#\#\# Rem to divide by hp.pixwin
+(Unresolved)
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{61}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{hp}\PY{o}{.}\PY{n}{sphtfunc}\PY{o}{.}\PY{n}{alm2cl}\PY{p}{(}\PY{n}{alm}\PY{p}{,} \PY{n}{alms2}\PY{o}{=}\PY{k+kc}{None}\PY{p}{,} \PY{n}{lmax}\PY{o}{=}\PY{k+kc}{None}\PY{p}{,} \PY{n}{mmax}\PY{o}{=}\PY{k+kc}{None}\PY{p}{,} \PY{n}{lmax\PYZus{}out}\PY{o}{=}\PY{k+kc}{None}\PY{p}{,} \PY{n}{nspec}\PY{o}{=}\PY{k+kc}{None}\PY{p}{)}
+\PY{c+c1}{\PYZsh{}Computes (cross\PYZhy{})spectra from alm(s). If alm2 is given, cross\PYZhy{}spectra between alm and alm2 are computed. If alm (and alm2 if provided) contains n alm, then n(n+1)/2 auto and cross\PYZhy{}spectra are returned}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{61}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+array([1.35051743e-06, 2.53453754e-07, 3.84581273e-07, {\ldots},
+       3.14515626e-15, 3.22686188e-15, 3.20514566e-15])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{62}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{cl} \PY{o}{=} \PY{n}{hp}\PY{o}{.}\PY{n}{sphtfunc}\PY{o}{.}\PY{n}{alm2cl}\PY{p}{(}\PY{n}{alm}\PY{p}{,} \PY{n}{alms2}\PY{o}{=}\PY{k+kc}{None}\PY{p}{,} \PY{n}{lmax}\PY{o}{=}\PY{k+kc}{None}\PY{p}{,} \PY{n}{mmax}\PY{o}{=}\PY{k+kc}{None}\PY{p}{,} \PY{n}{lmax\PYZus{}out}\PY{o}{=}\PY{k+kc}{None}\PY{p}{,} \PY{n}{nspec}\PY{o}{=}\PY{k+kc}{None}\PY{p}{)}
+\PY{n}{cl}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{62}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+array([1.35051743e-06, 2.53453754e-07, 3.84581273e-07, {\ldots},
+       3.14515626e-15, 3.22686188e-15, 3.20514566e-15])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{65}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{alm2map} \PY{o}{=} \PY{n}{hp}\PY{o}{.}\PY{n}{sphtfunc}\PY{o}{.}\PY{n}{synfast}\PY{p}{(}\PY{n}{cl}\PY{p}{,} \PY{n}{nside}\PY{o}{=}\PY{l+m+mi}{1024}\PY{p}{,} \PY{n}{lmax}\PY{o}{=}\PY{l+m+mi}{1300}\PY{p}{,} \PY{n}{mmax}\PY{o}{=}\PY{k+kc}{None}\PY{p}{,} \PY{n}{alm}\PY{o}{=}\PY{k+kc}{False}\PY{p}{,} \PY{n}{pol}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,} \PY{n}{pixwin}\PY{o}{=}\PY{k+kc}{False}\PY{p}{,} \PY{n}{fwhm}\PY{o}{=}\PY{l+m+mf}{0.0}\PY{p}{,} \PY{n}{sigma}\PY{o}{=}\PY{k+kc}{None}\PY{p}{,} \PY{n}{new}\PY{o}{=}\PY{k+kc}{False}\PY{p}{,} \PY{n}{verbose}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\PY{n}{alm2map}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{65}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+array([0.00039491, 0.00053628, 0.00071575, {\ldots}, 0.0001484 , 0.00048541,
+       0.00060199])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    Creates a map(s) from cl(s). Parameters cls {[}array or tuple of
+array{]} A cl or a list of cl (either 4 or 6, see synalm()) nside
+{[}int, scalar{]} The nside of the output map(s) lmax {[}int, scalar,
+optional{]} Maximum l for alm. Default: min of 3*nside-1 or length of
+the cls - 1 mmax {[}int, scalar, optional{]} Maximum m for alm. alm
+{[}bool, scalar, optional{]} If True, return also alm(s). Default:
+False. pol {[}bool, optional{]} If True, assumes input cls are TEB and
+correlation. Output will be TQU maps. (input must be 1, 4 or 6 cl's) If
+False, fields are assumed to be described by spin 0 spherical harmonics.
+(input can be any number of cl's) If there is only one input cl, it has
+no effect. Default: True. pixwin {[}bool, scalar, optional{]} If True,
+convolve the alm by the pixel window function. Default: False. fwhm
+{[}float, scalar, optional{]} The fwhm of the Gaussian used to smooth
+the map (applied on alm) {[}in radians{]} sigma {[}float, scalar,
+optional{]} The sigma of the Gaussian used to smooth the map (applied on
+alm) {[}in radians{]} Returns maps {[}array or tuple of arrays{]} The
+output map (possibly list of maps if polarized input). or, if alm is
+True, a tuple of (map,alm) (alm possibly a list of alm if polarized
+input)
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{68}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}estimating covariance matrix}
+\PY{c+c1}{\PYZsh{}np.cov(alm2map, y=None, rowvar=True, bias=False, ddof=None, fweights=None, aweights=None, dtype=None) NOT helpful}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{70}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{alm2map}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{70}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+array([0.00039491, 0.00053628, 0.00071575, {\ldots}, 0.0001484 , 0.00048541,
+       0.00060199])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{120}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{hp}\PY{o}{.}\PY{n}{mollview}\PY{p}{(}
+    \PY{n}{new\PYZus{}map}\PY{p}{,}
+    \PY{n}{coord}\PY{o}{=}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{G}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{,} \PY{c+c1}{\PYZsh{}galactic only}
+    \PY{n}{title}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Visualised sample}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{n}{unit}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{mK}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{n}{norm}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{hist}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{n+nb}{min}\PY{o}{=}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.01}\PY{p}{,}
+    \PY{n+nb}{max}\PY{o}{=}\PY{l+m+mf}{0.01}\PY{p}{,}
+\PY{p}{)}
+\PY{n}{hp}\PY{o}{.}\PY{n}{graticule}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_96_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{122}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{hp}\PY{o}{.}\PY{n}{mollview}\PY{p}{(}
+    \PY{n}{map\PYZus{}sample}\PY{p}{,}
+    \PY{n}{coord}\PY{o}{=}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{G}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{,}
+    \PY{n}{title}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Histogram equalized Galactic Sample 30Hz}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{n}{unit}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{mK}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{n}{norm}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{hist}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{n+nb}{min}\PY{o}{=}\PY{o}{\PYZhy{}}\PY{l+m+mf}{0.01}\PY{p}{,}
+    \PY{n+nb}{max}\PY{o}{=}\PY{l+m+mf}{0.01}\PY{p}{,}
+\PY{p}{)}
+\PY{n}{hp}\PY{o}{.}\PY{n}{graticule}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_97_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{125}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{hp}\PY{o}{.}\PY{n}{mollview}\PY{p}{(}
+    \PY{n}{map\PYZus{}sample} \PY{o}{\PYZhy{}} \PY{n}{new\PYZus{}map}\PY{p}{,}
+    \PY{n}{coord}\PY{o}{=}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{G}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{,}
+    \PY{n}{title}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Map Difference Galactic Sample 30Hz}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{n}{unit}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{mK}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{n}{norm}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{hist}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{c+c1}{\PYZsh{}min=\PYZhy{}0.0,}
+    \PY{c+c1}{\PYZsh{}max=0.01,}
+\PY{p}{)}
+\PY{n}{hp}\PY{o}{.}\PY{n}{graticule}\PY{p}{(}\PY{p}{)}
+    
+
+     
+        
+    
+    
+      
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_98_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{devoir-change-lmax-and-rerun}{%
+\subsection{Devoir: change lmax and
+rerun}\label{devoir-change-lmax-and-rerun}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}
